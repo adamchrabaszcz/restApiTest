@@ -5,14 +5,24 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Model\{User, Item, LoginUser};
 use AppBundle\Form\{UserType, LoginType, ItemType};
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * Frontend Controller class
+ *
+ */
 class FrontendController extends Controller
 {
+
     /**
+     * Index
+     *
      * @Route("/", name="frontend_index")
+     *     
+     * @param Request $request 
      */
     public function indexAction(Request $request)
     {
@@ -28,7 +38,11 @@ class FrontendController extends Controller
     }
     
     /**
+     * Items
+     * 
      * @Route("/items", name="frontend_items")
+     *
+     * @param Request $request 
      */
     public function itemsAction(Request $request)
     {
@@ -43,7 +57,11 @@ class FrontendController extends Controller
     }
     
     /**
+     * Finish
+     * 
      * @Route("/finish", name="frontend_finish")
+     *
+     * @param Request $request 
      */
     public function finish(Request $request)
     {
@@ -51,7 +69,11 @@ class FrontendController extends Controller
     }
     
     /**
+     * Login
+     * 
      * @Route("/login", name="frontend_login")
+     *
+     * @param Request $request 
      */
     public function login(Request $request)
     {
@@ -66,8 +88,11 @@ class FrontendController extends Controller
     }
     
     /**
+     * Logout
+     * 
      * @Route("/logout", name="frontend_logout")
      *
+     * @param Request $request     
      */
     public function logoutAction()
     {

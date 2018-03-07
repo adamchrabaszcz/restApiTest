@@ -5,7 +5,7 @@
             <div class="col-md-4 offset-md-4">
                 <h1>Hello!</h1>
                 <div class="form">
-                    <div class="form_error"></div>
+                    <div class="form_error bg-danger"></div>
                     {{ form_start(form, {attr: {id: 'loginForm'}}) }}
                     {{ form_errors(form) }}
                     <div class="form-group">
@@ -45,11 +45,11 @@
                     },
                     error: function (request, status, error) {
                         var responseObj = jQuery.parseJSON(request.responseText);
-                        if (responseObj.errors.form) {
-                            $.each(responseObj.errors.form.children, function(key, value){
-                                if (value.errors) {
-                                    $('#login_' + key).siblings('.bg-danger').html(value.errors[0]);                                
-                                }
+                        if ($.isPlainObject(responseObj.errors)) {
+                            $.each(responseObj.errors, function(key, value){
+                                $($('.form').find('[name*="'+key+'"]')[0]).closest('.form-group').find('.bg-danger').html(
+                                    $.isPlainObject(value) ? value[Object.keys(value)[0]] : value
+                                );             
                             });
                         } else {
                             $('.form_error').html(responseObj.errors);

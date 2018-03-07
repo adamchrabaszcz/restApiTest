@@ -15,9 +15,9 @@
                     <div class="form-group">
                         <div class="bg-danger">{{ form_errors(form.email) }}</div>                        
                         {{ form_widget(form.email,  {'attr': {'title':'Email', 'placeholder': 'Email', 'class':'form-control'}}) }}
-                    </div>                    
+                    </div>                                        
                     <div class="form-group">
-                        <div class="bg-danger">{{ form_errors(form.password) }}</div>                        
+                        <div class="bg-danger">{{ form_errors(form.password) }}</div>                                                
                         {{ form_widget(form.password,  {'attr': {'title':'Password', 'placeholder': 'Password', 'class':'form-control'}}) }}
                     </div>
                     <div class="form-group">
@@ -50,10 +50,10 @@
                     error: function (request, status, error) {
 
                         var responseObj = jQuery.parseJSON(request.responseText);
-                        $.each(responseObj.errors.form.children, function(key, value){
-                            if (value.errors) {
-                                $('#user_' + key).siblings('.bg-danger').html(value.errors[0]);                                
-                            }
+                        $.each(responseObj.errors, function(key, value){
+                            $($('.form').find('[name*="'+key+'"]')[0]).closest('.form-group').find('.bg-danger').html(
+                                $.isPlainObject(value) ? value[Object.keys(value)[0]] : value
+                            );                               
                         });
                     }
                 });

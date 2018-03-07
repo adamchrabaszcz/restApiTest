@@ -13,7 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use JMS\Serializer;
+use Symfony\Component\Form\Form;
 
+/**
+ * Rest Controller class
+ *
+ */
 class RestController extends Controller
 {
 
@@ -82,7 +87,7 @@ class RestController extends Controller
             
         }
 
-        return FOSView::create(['errors' => $form->getErrors()], 400);
+        return FOSView::create(['errors' => $this->getErrorMessages($form)], 400);
     }
     
     /**
@@ -109,9 +114,30 @@ class RestController extends Controller
             
         }
 
-        return FOSView::create(['errors' => $form->getErrors()], 400);
+        return FOSView::create(['errors' => $this->getErrorMessages($form)], 400);
     } 
     
+    /**
+     * Reformat error messages
+     *
+     * @param Form $form 
+     * @return array
+     */
+    protected function getErrorMessages(Form $form) 
+    {
+        $errors = [];
 
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        foreach ($form->all() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = $this->getErrorMessages($child);
+            }
+        }
+
+        return $errors;
+    }
 
 }
