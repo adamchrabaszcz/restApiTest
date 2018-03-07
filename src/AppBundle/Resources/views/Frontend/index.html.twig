@@ -1,0 +1,123 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% block body %}
+    <div class="container" id="content">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <h1>Hi!</h1>
+                <div class="form">
+                    <div class="form_error"></div>
+                    {{ form_start(form, {attr: {id: 'userForm'}}) }}
+                    {{ form_errors(form) }}
+                    <div class="form-group">
+                        <div class="bg-danger">{{ form_errors(form.name) }}</div>                        
+                        {{ form_widget(form.name,  {'attr': {'title':'Name', 'placeholder': 'Name', 'class':'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <div class="bg-danger">{{ form_errors(form.email) }}</div>                        
+                        {{ form_widget(form.email,  {'attr': {'title':'Email', 'placeholder': 'Email', 'class':'form-control'}}) }}
+                    </div>                    
+                    <div class="form-group">
+                        <div class="bg-danger">{{ form_errors(form.password) }}</div>                        
+                        {{ form_widget(form.password,  {'attr': {'title':'Password', 'placeholder': 'Password', 'class':'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+                <div class="form_success bg-success"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.form').on('submit', '#userForm', function (e) {
+                e.preventDefault();
+                $('.form_success').html('');
+                $('.bg-danger').html('');                
+
+                $.ajax({
+                    type: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success:function(response){
+                        loadItems(response);             
+                    },
+                    error: function (request, status, error) {
+
+                        var responseObj = jQuery.parseJSON(request.responseText);
+                        $.each(responseObj.errors.form.children, function(key, value){
+                            if (value.errors) {
+                                $('#user_' + key).siblings('.bg-danger').html(value.errors[0]);                                
+                            }
+                        });
+                    }
+                });
+            });
+            
+            function loadItems(uri){
+                $.ajax({
+                    type: 'GET',
+                    url: uri,
+                    success:function(response){
+                        $('#content').html(response);
+                        prepareItemSearch();
+                    }
+                });
+            }
+            
+            function prepareItemSearch(){
+                $('.form').on('keyup', '#name_name', function (e) {
+                    e.preventDefault();                
+                    $.ajax({
+                        type: $('#itemsForm').attr('method'),
+                        url: $('#itemsForm').attr('action'),
+                        data: $(this).val(),
+                        success:function(response){
+                            var responseObj = jQuery.parseJSON(response);
+                            var items = "";
+                            $.each(responseObj, function(key, value){
+                                items += '<p><a class="item-link" href="' + value.link + '">' + value.company_name + '</a></p>';
+                            });
+                             $('#items').html(items);
+                             prepareItems();
+                        },
+                        error: function (request, status, error) {
+                        
+                        }
+                    });
+                });
+            }
+            
+            function prepareItems(){
+                $('p').on('click', '.item-link', function (e) {
+                    e.preventDefault();               
+
+                    $.ajax({
+                        type: 'GET',
+                        url: $(this).attr('href'),
+                        success:function(response){
+                            loadItem(response);             
+                        }
+                    });
+                });
+            }
+            
+            function loadItem(uri){
+                $.ajax({
+                    type: 'GET',
+                    url: uri,
+                    success:function(response){
+                        $('#content').html(response);
+                    }
+                });
+            }
+        });
+
+        
+    </script>
+{% endblock %}

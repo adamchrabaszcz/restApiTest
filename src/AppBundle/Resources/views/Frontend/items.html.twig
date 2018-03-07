@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <h1>Hi again ;)</h1>
+        <div class="form">
+            <div class="form_error"></div>
+            {{ form_start(form, {attr: {id: 'itemsForm'}}) }}
+            {{ form_errors(form) }}
+            <div class="form-group">
+                <div class="bg-danger">{{ form_errors(form.name) }}</div>                        
+                {{ form_widget(form.name,  {'attr': {'title':'Name', 'placeholder': 'Name', 'class':'form-control'}}) }}
+            </div>
+            <div id="items">
+            </div>
+            {{ form_end(form) }}
+        </div>
+        <div class="form_success bg-success"></div>
+    </div>
+</div>

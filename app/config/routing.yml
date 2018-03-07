@@ -1,0 +1,10 @@
+# API ROUTES
+backend_api:
+    resource: "@AppBundle/Controller/RestController.php"
+    type:   rest
+    prefix: /api
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation    
+

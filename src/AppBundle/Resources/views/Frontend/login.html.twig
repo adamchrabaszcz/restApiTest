@@ -1,0 +1,64 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% block body %}
+    <div class="container" id="content">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <h1>Hello!</h1>
+                <div class="form">
+                    <div class="form_error"></div>
+                    {{ form_start(form, {attr: {id: 'loginForm'}}) }}
+                    {{ form_errors(form) }}
+                    <div class="form-group">
+                        <div class="bg-danger">{{ form_errors(form.email) }}</div>                        
+                        {{ form_widget(form.email,  {'attr': {'title':'Email', 'placeholder': 'Email', 'class':'form-control'}}) }}
+                    </div>                    
+                    <div class="form-group">
+                        <div class="bg-danger">{{ form_errors(form.password) }}</div>                        
+                        {{ form_widget(form.password,  {'attr': {'title':'Password', 'placeholder': 'Password', 'class':'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+                <div class="form_success bg-success"></div>               
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ parent() }}    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.form').on('submit', '#loginForm', function (e) {
+                e.preventDefault();
+                $('.form_success').html('');
+                $('.bg-danger').html('');                
+
+                $.ajax({
+                    type: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success:function(response){
+                        $('#content').html('<h1>' + response + '</h1>');             
+                    },
+                    error: function (request, status, error) {
+                        var responseObj = jQuery.parseJSON(request.responseText);
+                        if (responseObj.errors.form) {
+                            $.each(responseObj.errors.form.children, function(key, value){
+                                if (value.errors) {
+                                    $('#login_' + key).siblings('.bg-danger').html(value.errors[0]);                                
+                                }
+                            });
+                        } else {
+                            $('.form_error').html(responseObj.errors);
+                        }
+                    }
+                });
+            });
+        });
+
+        
+    </script>
+{% endblock %}
